@@ -41,7 +41,7 @@ This failed partway through:
 Operation did not complete successfully because the file contains a virus or potentially unwanted software.
 ```
 
-![Defender blocking the install](../screenshots/atomic-red-team/01-defender-virus-block-error.png)
+![Defender blocking the install](screenshots/atomic-red-team/01-defender-virus-block-error.png)
 
 **Why this happens:** several atomic test files intentionally mimic real malware patterns, so Windows Defender flags and quarantines them on sight during download. This isn't a broken install — it's Defender doing exactly what it's designed to do. The `Invoke-AtomicRedTeam` module itself installed fine; only the atomics repo download got interrupted.
 
@@ -57,7 +57,7 @@ C:\AtomicRedTeam
 C:\Program Files\AccessData\FTK Imager
 ```
 
-![Defender exclusion added](../screenshots/atomic-red-team/02-defender-exclusion-added.png)
+![Defender exclusion added](screenshots/atomic-red-team/02-defender-exclusion-added.png)
 
 (The FTK Imager line was already there from before this session — not something added here, just confirming the new exclusion sits alongside it correctly.)
 
@@ -88,7 +88,7 @@ Get-Command Invoke-AtomicTest
 Invoke-AtomicTest T1059.001 -ShowDetailsBrief
 ```
 
-![Module imported, command available, 22 sub-tests listed for T1059.001](../screenshots/atomic-red-team/03-install-verified-module-ready.png)
+![Module imported, command available, 22 sub-tests listed for T1059.001](screenshots/atomic-red-team/03-install-verified-module-ready.png)
 
 22 sub-tests returned for T1059.001 alone — confirms the module isn't just installed, it's actually ready to run tests.
 
@@ -96,7 +96,7 @@ Invoke-AtomicTest T1059.001 -ShowDetailsBrief
 
 Instead of installing everything and running a pile of tests before writing any detections, each technique goes through the same loop, start to finish, before moving to the next one:
 
-![Atomic Red Team execution and validation workflow](../screenshots/atomic-red-team/workflow-diagram.png)
+![Atomic Red Team execution and validation workflow](screenshots/atomic-red-team/workflow-diagram.png)
 
 A quick note on this diagram: it's something I put together myself to keep the loop visible while working through techniques — it isn't from Red Canary's official documentation. In short: prep the environment once, then for every technique — select it, check details, check prerequisites (install any that are missing), run the test, confirm it shows up in Windows telemetry and in Splunk, investigate what was generated, clean up, and confirm the cleanup actually worked before moving to the next technique.
 
@@ -128,7 +128,7 @@ Hello, from PowerShell!
 Exit code: 0
 ```
 
-![Full test sequence: details, prereq check, and execution](../screenshots/atomic-red-team/04-test17-full-sequence.png)
+![Full test sequence: details, prereq check, and execution](screenshots/atomic-red-team/04-test17-full-sequence.png)
 
 A few things worth calling out from this run:
 
@@ -150,7 +150,7 @@ index=powershell earliest=-5m
 | search "Hello"
 ```
 
-![Confirmed in Splunk — 41 matching events](../screenshots/atomic-red-team/05-splunk-search-hello-confirmed.png)
+![Confirmed in Splunk — 41 matching events](screenshots/atomic-red-team/05-splunk-search-hello-confirmed.png)
 
 41 matching events came back, sourced from `WinEventLog:Microsoft-Windows-PowerShell/Operational`, with `host=WIN10-01` tying them back to this exact test run. Getting a result at all confirms both halves of the pipeline at once.
 
@@ -161,7 +161,7 @@ index=powershell
 | stats count by HostApplication
 ```
 
-![Filtering on a specific field returns nothing pre-TA-Windows](../screenshots/atomic-red-team/06-splunk-specific-field-no-results.png)
+![Filtering on a specific field returns nothing pre-TA-Windows](screenshots/atomic-red-team/06-splunk-specific-field-no-results.png)
 
 If you hit this same "no results" wall while filtering on fields like `EventCode`, `Image`, or `CommandLine`, that's expected at this stage — it gets fixed in `08-splunk-ta-windows.md`, which installs the add-on that normalizes these fields across every index.
 
@@ -185,7 +185,7 @@ Executing cleanup for test: T1059.001-17 PowerShell Command Execution
 Done executing cleanup for test: T1059.001-17 PowerShell Command Execution
 ```
 
-![Cleanup completed](../screenshots/atomic-red-team/07-test17-cleanup.png)
+![Cleanup completed](screenshots/atomic-red-team/07-test17-cleanup.png)
 
 Cleanup after every atomic test is the right habit to build now, even for a harmless one like this — it stops leftover state from quietly piling up across dozens of future runs.
 
