@@ -46,21 +46,21 @@ Get-NetAdapter | Format-Table Name, InterfaceDescription, Status
 Get-NetIPConfiguration
 ```
 
-![Adapter info before configuration](../screenshots/windows-setup/01-network-adapters-info.png)
+![Adapter info before configuration](screenshots/windows-setup/01-network-adapters-info.png)
 
 `Ethernet0` turned out to be the NAT adapter (internet). `Ethernet1` is the host-only one — that's the one that needed the static IP.
 
 **Navigation:** `Control Panel → Network and Internet → Network and Sharing Center → Change adapter settings`
 
-![Network and Sharing Center](../screenshots/windows-setup/02-network-sharing-center.png)
+![Network and Sharing Center](screenshots/windows-setup/02-network-sharing-center.png)
 
 Right-click `Ethernet1` → `Properties`:
 
-![Ethernet1 properties menu](../screenshots/windows-setup/03-ethernet1-properties-menu.png)
+![Ethernet1 properties menu](screenshots/windows-setup/03-ethernet1-properties-menu.png)
 
 Select `Internet Protocol Version 4 (TCP/IPv4)` → `Properties`:
 
-![Ethernet1 TCP/IPv4 properties](../screenshots/windows-setup/04-ethernet1-tcpip-properties.png)
+![Ethernet1 TCP/IPv4 properties](screenshots/windows-setup/04-ethernet1-tcpip-properties.png)
 
 Configuration applied:
 
@@ -71,7 +71,7 @@ Configuration applied:
 | Default gateway | (left blank) |
 | Preferred DNS | 192.168.56.1 |
 
-![Static IP configured](../screenshots/windows-setup/05-static-ip-configuration.png)
+![Static IP configured](screenshots/windows-setup/05-static-ip-configuration.png)
 
 Verified against SOC01:
 
@@ -82,7 +82,7 @@ ping 192.168.56.10
 Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
 ```
 
-![Ping to SOC01 successful](../screenshots/windows-setup/06-ping-soc01-verified.png)
+![Ping to SOC01 successful](screenshots/windows-setup/06-ping-soc01-verified.png)
 
 ## Step 3 — Event log sizing
 
@@ -105,7 +105,7 @@ Event Viewer → Windows Logs → Security → right-click → Properties
 
 Set **Maximum log size (KB)** to `1048576`, retention left on **Overwrite events as needed**.
 
-![Security log properties — configured size](../screenshots/windows-setup/07-security-log-properties.png)
+![Security log properties — configured size](screenshots/windows-setup/07-security-log-properties.png)
 
 The same steps apply to the other three logs, just with different paths and target sizes:
 
@@ -127,7 +127,7 @@ Leap Indicator: 3(not synchronized)
 Source: Local CMOS Clock
 ```
 
-![NTP status before configuration](../screenshots/windows-setup/08-ntp-initial-status.png)
+![NTP status before configuration](screenshots/windows-setup/08-ntp-initial-status.png)
 
 Enabled and configured the Windows Time service to sync against `time.windows.com`:
 
@@ -167,7 +167,7 @@ Sending resync command to local computer
 The command completed successfully.
 ```
 
-![NTP resync confirmed, peer active](../screenshots/windows-setup/09-ntp-resync-confirmed.png)
+![NTP resync confirmed, peer active](screenshots/windows-setup/09-ntp-resync-confirmed.png)
 
 **Lesson learned:** running `/resync` immediately after pointing `w32tm` at a new peer can throw a "no time data was available" error just because the service hasn't caught up yet — it's not an actual sync problem. Waiting a few seconds and checking status again (or just re-running the resync) usually shows it worked fine.
 

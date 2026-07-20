@@ -36,7 +36,7 @@ cd ~/Downloads
 sudo dpkg -i splunk-10.4.1-5a009d941268-linux-amd64.deb
 ```
 
-![Splunk dpkg install](../screenshots/splunk-installation/01-splunk-dpkg-install.png)
+![Splunk dpkg install](screenshots/splunk-installation/01-splunk-dpkg-install.png)
 
 Installed to `/opt/splunk`.
 
@@ -51,7 +51,7 @@ ls /opt
 tree -L 1 /opt/splunk
 ```
 
-![Install directory tree](../screenshots/splunk-installation/02-install-directory-tree.png)
+![Install directory tree](screenshots/splunk-installation/02-install-directory-tree.png)
 
 Splunk's install directory is the heart of the SIEM — this is where configuration, data, and logs all live going forward:
 
@@ -88,7 +88,7 @@ Init script installed at /etc/init.d/splunk.
 Init script is configured to run at boot.
 ```
 
-![Boot-start enabled](../screenshots/splunk-installation/10-boot-start-enabled.png)
+![Boot-start enabled](screenshots/splunk-installation/10-boot-start-enabled.png)
 
 This registers Splunk as a system service so it comes back up automatically after a reboot, rather than depending on someone starting it manually.
 
@@ -108,8 +108,8 @@ Before configuring receiving, the destination indexes need to exist. Splunk ship
 
 Direct URL: `http://192.168.56.10:8000/en-US/manager/search/data/indexes`
 
-![Settings menu — Data section](../screenshots/splunk-installation/03-settings-menu-nav.png)
-![Settings menu — Indexes](../screenshots/splunk-installation/07-settings-menu-indexes-nav.png)
+![Settings menu — Data section](screenshots/splunk-installation/03-settings-menu-nav.png)
+![Settings menu — Indexes](screenshots/splunk-installation/07-settings-menu-indexes-nav.png)
 
 Create exactly three indexes: `sysmon`, `wineventlog`, `powershell`.
 
@@ -119,8 +119,8 @@ For each one, the form is mostly left at default — nothing exotic here. What a
 - **Data integrity check** — set to **Enable** (Splunk computes hashes over every slice of ingested data, useful for verifying nothing was tampered with after the fact — relevant given this is security telemetry)
 - Everything else — home path, cold path, thawed path, max size of entire index, max size of hot/warm/cold bucket — left at Splunk's defaults, which is fine for a single-node lab
 
-![Indexes list](../screenshots/splunk-installation/08-indexes-list.png)
-![Index settings screen — sysmon](../screenshots/splunk-installation/09-edit-index-sysmon.png)
+![Indexes list](screenshots/splunk-installation/08-indexes-list.png)
+![Index settings screen — sysmon](screenshots/splunk-installation/09-edit-index-sysmon.png)
 
 Same steps repeated for `wineventlog` and `powershell` — only the name changes, Data integrity check enabled, rest left default.
 
@@ -157,9 +157,9 @@ This lab is a single-node deployment, but the index separation mirrors enterpris
 
 **Navigation:** `Settings` → under **DATA** → `Forwarding and receiving` → `Configure receiving` → `Add new`
 
-![Settings menu — Forwarding and receiving](../screenshots/splunk-installation/03-settings-menu-nav.png)
-![Forwarding and receiving page](../screenshots/splunk-installation/04-forwarding-receiving-page.png)
-![Configure receiving — port 9997](../screenshots/splunk-installation/05-configure-receiving-port.png)
+![Settings menu — Forwarding and receiving](screenshots/splunk-installation/03-settings-menu-nav.png)
+![Forwarding and receiving page](screenshots/splunk-installation/04-forwarding-receiving-page.png)
+![Configure receiving — port 9997](screenshots/splunk-installation/05-configure-receiving-port.png)
 
 Set the listening port to `9997` and saved.
 
@@ -174,7 +174,7 @@ sudo ss -tulpn | grep 9997
 tcp   LISTEN   0   128   0.0.0.0:9997   0.0.0.0:*   users:(("splunkd",pid=116961,fd=127))
 ```
 
-![Receiving port verified via ss](../screenshots/splunk-installation/06-receiving-port-verified.png)
+![Receiving port verified via ss](screenshots/splunk-installation/06-receiving-port-verified.png)
 
 ## Firewall
 
@@ -202,7 +202,7 @@ To              Action      From
 9997/tcp (v6)   ALLOW IN    Anywhere (v6)
 ```
 
-![Firewall UFW rules](../screenshots/splunk-installation/11-firewall-ufw-rules.png)
+![Firewall UFW rules](screenshots/splunk-installation/11-firewall-ufw-rules.png)
 
 Default-deny on incoming traffic, with SSH, Splunk Web, and the receiving port explicitly allowed. Everything else on SOC01 is closed by default now, instead of relying on whatever isolation the host-only network happened to provide.
 
