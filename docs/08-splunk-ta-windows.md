@@ -26,7 +26,7 @@ Downloaded the latest **Splunk Add-on for Microsoft Windows** from Splunkbase (v
 
 **Download:** [splunkbase.splunk.com/app/742](https://splunkbase.splunk.com/app/742)
 
-![Splunkbase — Splunk Add-on for Microsoft Windows](../screenshots/ta-windows/01-splunkbase-download-page.png)
+![Splunkbase — Splunk Add-on for Microsoft Windows](screenshots/ta-windows/01-splunkbase-download-page.png)
 
 ## Step 2: Install on SOC01
 
@@ -37,7 +37,7 @@ Settings → Apps → Manage Apps → Install app from file
 
 Uploaded `splunk-add-on-for-microsoft-windows_1011.spl` directly through the web UI.
 
-![Installing the app from file](../screenshots/ta-windows/02-install-app-from-file.png)
+![Installing the app from file](screenshots/ta-windows/02-install-app-from-file.png)
 
 ## Step 3: Restart Splunk
 
@@ -45,7 +45,7 @@ Uploaded `splunk-add-on-for-microsoft-windows_1011.spl` directly through the web
 sudo /opt/splunk/bin/splunk restart
 ```
 
-![Splunk restart output](../screenshots/ta-windows/03-splunk-restart-output.png)
+![Splunk restart output](screenshots/ta-windows/03-splunk-restart-output.png)
 
 ## Step 4: Verify the normalized fields actually work
 
@@ -54,14 +54,14 @@ index=wineventlog
 | stats count by EventCode
 ```
 
-![EventCode field working across wineventlog](../screenshots/ta-windows/04-verify-eventcode-stats.png)
+![EventCode field working across wineventlog](screenshots/ta-windows/04-verify-eventcode-stats.png)
 
 ```spl
 index=powershell
 | stats count by EventID
 ```
 
-![EventID field working across powershell, including 4103/4104](../screenshots/ta-windows/05-verify-powershell-eventid-stats.png)
+![EventID field working across powershell, including 4103/4104](screenshots/ta-windows/05-verify-powershell-eventid-stats.png)
 
 Both queries return clean, structured breakdowns instead of raw XML dumps — including the 4103/4104 script-block events and the standard logon/process codes (4624, 4672, 4688, and others). This confirms the add-on is doing its job: turning Windows event XML into fields Splunk, and every future Sigma rule, can search on directly.
 
