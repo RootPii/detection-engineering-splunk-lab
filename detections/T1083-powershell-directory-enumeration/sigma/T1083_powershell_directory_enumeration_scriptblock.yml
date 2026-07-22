@@ -1,0 +1,58 @@
+title: PowerShell Directory Enumeration via Script Block Logging
+id: 3d8a1f2e-6b4c-4e9a-9d7f-1a2b3c4d5e6f
+status: experimental
+description: >
+  Detects a PowerShell script block matching the structural pattern of a
+  looped directory-enumeration script: a foreach loop invoking
+  Get-ChildItem with -ErrorAction SilentlyContinue and appending output
+  via Out-File -append. This combination of error-handling and append
+  behavior together is a tighter fingerprint of scripted recon than any
+  single term alone, and is captured via Event ID 4104 as an independent
+  log source alongside process-creation telemetry.
+  Note: this rule matches the literal cmdlet name Get-ChildItem and does
+  not currently cover aliases (gci, ls, dir) -- see Known Limitations.
+  Validated using the MAZE-style directory enumeration implemented in
+  Atomic Red Team T1083 Test #5 ("Simulating MAZE Directory Enumeration").
+author: RootPii
+date: 2026-07-20
+modified: 2026-07-20
+references:
+  - https://attack.mitre.org/techniques/T1083/
+  - https://www.mandiant.com/resources/blog/tactics-techniques-procedures-associated-with-maze-ransomware-incidents
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1083/T1083.md
+logsource:
+  product: windows
+  category: ps_script
+detection:
+  selection:
+    ScriptBlockText|contains|all:
+      - 'foreach'
+      - 'Get-ChildItem'
+      - '-ErrorAction'
+      - 'SilentlyContinue'
+      - 'Out-File'
+      - '-append'
+  condition: selection
+fields:
+  - UtcTime
+  - Path
+  - ScriptBlockText
+  - User
+falsepositives:
+  - Legitimate PowerShell inventory or backup scripts that loop over directories with the same error-handling and append-output pattern (uncommon but possible in bespoke automation)
+level: medium
+tags:
+  - attack.discovery
+  - attack.t1083
+
+# ---------------------------------------------------------------------
+# KNOWN LIMITATION
+# ---------------------------------------------------------------------
+# This rule requires the literal string 'Get-ChildItem'. PowerShell
+# aliases (gci, ls, dir) will NOT be caught by this rule or by the
+# companion process_creation rule in this repository. Alias coverage
+# is an open gap in both rules, not solved by either individually.
+# A future rule targeting alias forms specifically (with tighter
+# co-occurrence logic to control false positives on the very short
+# alias strings) is the correct way to close this, not folded into
+# this rule.

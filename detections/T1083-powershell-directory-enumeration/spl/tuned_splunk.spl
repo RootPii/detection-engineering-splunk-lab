@@ -1,0 +1,9 @@
+index=powershell EventID=4104
+ScriptBlockText="*foreach*"
+ScriptBlockText="*Get-ChildItem*"
+ScriptBlockText="*-ErrorAction*"
+ScriptBlockText="*SilentlyContinue*"
+ScriptBlockText="*Out-File*"
+ScriptBlockText="*-append*"
+| table UtcTime Path User ScriptBlockId ScriptBlockText
+| sort UtcTime
